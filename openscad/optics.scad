@@ -323,6 +323,30 @@ module z_platform(
     }
 }
 
+module picamera_macro_adapter(dt_h=30){
+    // This holds a pi camera a bit below the stage, for "macro imaging" with a
+    // partially unscrewed lens
+    cy = objective_clip_y;
+    cw = objective_clip_w;
+    union(){
+        sequential_hull(){
+            union(){
+                cylinder(r=9,h=d);
+                dovetail_mount(shift=3);
+            }
+            translate([0,0,dt_h-8]) union(){
+                cylinder(r=9,h=d);
+                dovetail_mount(shift=3);
+            }
+            translate([0,2.4,dt_h]) cube([25+24+4]+[2,2,0]);
+        }
+        // add the dovetail
+        translate([0,objective_clip_y,0]){
+            dovetail_m([objective_clip_w+4,3,dt_h],waist=0);
+        }
+    }
+}
+
 module rms_mount_and_tube_lens_gripper(){
     // This assembly holds an RMS objective and a correcting
     // "tube" lens.  I dont think this is used any more...
@@ -523,7 +547,8 @@ difference(){
         lens_h = 5.5
     );//*/
     // Flat platform for macroscope type optics
-    z_platform(25);
+    //z_platform(25);
+    picamera_macro_adapter();
     //*/
     //
     //picam_cover();
